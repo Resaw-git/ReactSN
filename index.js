@@ -29,7 +29,10 @@ app.post('/message', jsonParser, (req, res) => {
     bot.sendMessage(groupId, text)
 })
 
-app.use(express.static(path.resolve(__dirname, 'static')))
+app.use(express.static(__dirname + '/static'))
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html')
+})
 
 app.listen(PORT, () => {
     console.log(`Server has been started on ${PORT}`)

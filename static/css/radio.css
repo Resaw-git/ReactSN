@@ -24,12 +24,12 @@
 	position: absolute;
 	left: 0;
 	bottom: 0px;
-	background: url(./image/circle-regular.svg) 0 0 no-repeat;
+	background: url('/image/circle-regular.svg') 0 0 no-repeat;
 }
  
 /* Checked */
 .form_radio input[type=radio]:checked + label:before {
-	background: url(./image/dot-circle-regular.svg) 0 0 no-repeat;
+	background: url('/image/dot-circle-regular.svg') 0 0 no-repeat;
 }
  
 /* Hover */
