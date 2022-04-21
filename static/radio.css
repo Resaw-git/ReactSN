@@ -1,0 +1,43 @@
+.form_radio {
+	margin: 10px 0;
+	display: flex;
+	flex-direction: column;
+}
+.form_radio input[type=radio] {
+	display: none;
+}
+.form_radio label {
+	display: inline-block;
+	cursor: pointer;
+	position: relative;
+	padding-left: 25px;
+	margin-right: 0;
+	line-height: 18px;
+	user-select: none;
+	margin: 5px 0;
+}
+.form_radio label:before {
+	content: "";
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	left: 0;
+	bottom: 0px;
+	background: url(./image/circle-regular.svg) 0 0 no-repeat;
+}
+ 
+/* Checked */
+.form_radio input[type=radio]:checked + label:before {
+	background: url(./image/dot-circle-regular.svg) 0 0 no-repeat;
+}
+ 
+/* Hover */
+.form_radio label:hover:before {
+	filter: brightness(120%);
+}
+ 
+/* Disabled */
+.form_radio input[type=radio]:disabled + label:before {
+	filter: grayscale(100%);
+}
