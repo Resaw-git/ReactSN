@@ -3,8 +3,8 @@ const path = require('path')
 /* const telegramApi = require('node-telegram-bot-api') */
 
 const PORT = 3000
-/* const token = 
-const groupId =  */
+const token = secret
+const groupId = secret
 
 const app = express()
 const jsonParser = express.json()
