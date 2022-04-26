@@ -1,19 +1,20 @@
 const express = require('express')
 const path = require('path')
-const telegramApi = require('node-telegram-bot-api')
+/* const telegramApi = require('node-telegram-bot-api') */
 
 const PORT = 3000
-const token = '5292936770:AAHqjJabEZHBXV_f1ygTpShR34pr8v7hFEU'
-const groupId = -702533975
+/* const token = 
+const groupId =  */
 
 const app = express()
 const jsonParser = express.json()
-const bot = new telegramApi(token, {polling: true})
+/* const bot = new telegramApi(token, {polling: true}) */
 
 app.post('/message', jsonParser, (req, res) => {
     if(!req.body) return res.sendStatus(400)
     res.send('sucsess')
-    const text = `        
+    console.log(req.body)
+/*     const text = `        
 Имя: ${req.body.name}
 Контактные данные: ${req.body.contact}
 Поставлено звёзд: ${req.body.stars}
@@ -26,13 +27,10 @@ app.post('/message', jsonParser, (req, res) => {
 Откуда вы узнали о нашем заведении?: ${req.body.question7}
 Чтобы Вы хотели улучшить/добавить в нашем заведении?: ${req.body.question8}
 Чтобы Вы хотели увидеть нового в меню?: ${req.body.question9}`
-    bot.sendMessage(groupId, text)
+    bot.sendMessage(groupId, text) */
 })
 
-app.use(express.static(__dirname + '/static'))
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html')
-})
+app.use(express.static(path.resolve(__dirname, 'static')))
 
 app.listen(PORT, () => {
     console.log(`Server has been started on ${PORT}`)

@@ -15,22 +15,26 @@
         <img class="tilte" alt="logo" src="image/logo.jpg">
         <div class="subtitle">ОСТАВЬТЕ ОТЗЫВ</div>
         <div class="wrapper">
-            <div class="stars">
-                <img src="image/star-white.svg" id="star1" alt="star" class="star">
-                <img src="image/star-white.svg" id="star2" alt="star" class="star">
-                <img src="image/star-white.svg" id="star3" alt="star" class="star">
-                <img src="image/star-white.svg" id="star4" alt="star" class="star">
-                <img src="image/star-white.svg" id="star5" alt="star" class="star">
-            </div>
+            <div class="warning"></div>
             <form class="form" name="form">
-                <input type="text" name="name" placeholder="Ваше имя*" required>
-                <input type="text" name="contact" placeholder="Ваши контактные данные*" required>
+                <div class="stars">
+                    <input type="hidden" name="star">
+                    <img src="image/star-white.svg" id="star1" alt="star" class="star">
+                    <img src="image/star-white.svg" id="star2" alt="star" class="star">
+                    <img src="image/star-white.svg" id="star3" alt="star" class="star">
+                    <img src="image/star-white.svg" id="star4" alt="star" class="star">
+                    <img src="image/star-white.svg" id="star5" alt="star" class="star">
+                </div>
+                <div class="contacts">
+                    <input type="text" name="name" placeholder="Ваше имя*" required>
+                    <input type="tel" name="phone" placeholder="Ваш номер телефона*"required>
+                </div>
                 <div class="questions">
                     <div class="questions__text">
                         Посетите ли Вы нас снова?
                     </div>
                     <div class="questions__request">
-                        <input id="q1" type="hidden" name="question1">
+                        <input type="hidden" name="question1">
                         <div id="q1-r1" class="questions__var">Да</div>
                         <div id="q1-r2" class="questions__var">Нет</div>
                     </div>
@@ -40,7 +44,7 @@
                         Порекомендовали бы наше заведение друзьям и знакомым?
                     </div>
                     <div class="questions__request">
-                        <input id="q2" type="hidden" name="question2">
+                        <input type="hidden" name="question2">
                         <div id="q2-r1" class="questions__var">Да</div>
                         <div id="q2-r2" class="questions__var">Нет</div>
                     </div>

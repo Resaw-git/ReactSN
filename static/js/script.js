@@ -8,7 +8,9 @@ const star2 = document.getElementById('star2')
 const star3 = document.getElementById('star3')
 const star4 = document.getElementById('star4')
 const star5 = document.getElementById('star5')
-let totalStars = 0
+
+const form = document.forms.form
+const warning = document.querySelector('.warning')
 
 q1_r1.addEventListener('click', () => {
     if (q1_r1.classList.contains('selected')) {
@@ -16,7 +18,7 @@ q1_r1.addEventListener('click', () => {
     } else {
         q1_r2.classList.remove('selected')
         q1_r1.classList.add('selected')
-        document.getElementById('q1').value = 'yes'
+        form.question1.value = 'affirmative'
     }
 })
 
@@ -26,7 +28,7 @@ q1_r2.addEventListener('click', () => {
     } else {
         q1_r1.classList.remove('selected')
         q1_r2.classList.add('selected')
-        document.getElementById('q1').value = 'no'
+        form.question1.value = 'negative'
     }
 })
 
@@ -36,7 +38,7 @@ q2_r1.addEventListener('click', () => {
     } else {
         q2_r2.classList.remove('selected')
         q2_r1.classList.add('selected')
-        document.getElementById('q2').value = 'yes'
+        form.question2.value = 'affirmative'
     }
 })
 
@@ -46,21 +48,21 @@ q2_r2.addEventListener('click', () => {
     } else {
         q2_r1.classList.remove('selected')
         q2_r2.classList.add('selected')
-        document.getElementById('q2').value = 'no'
+        form.question2.value = 'negative'
     }
 })
 
 star1.addEventListener('click', () => {
     [star1, star2, star3, star4, star5].map((e) => e.src = './image/star-white.svg')
     star1.src = './image/star-white-fill.svg'
-    totalStars = 1
+    form.star.value = '1'
 })
 
 star2.addEventListener('click', () => {
     [star1, star2, star3, star4, star5].map((e) => e.src = './image/star-white.svg')
     star1.src = './image/star-white-fill.svg'
     star2.src = './image/star-white-fill.svg'
-    totalStars = 2
+    form.star.value = '2'
 })
 
 star3.addEventListener('click', () => {
@@ -68,7 +70,7 @@ star3.addEventListener('click', () => {
     star1.src = './image/star-white-fill.svg'
     star2.src = './image/star-white-fill.svg'
     star3.src = './image/star-white-fill.svg'
-    totalStars = 3
+    form.star.value = '3'
 })
 
 star4.addEventListener('click', () => {
@@ -77,53 +79,109 @@ star4.addEventListener('click', () => {
     star2.src = './image/star-white-fill.svg'
     star3.src = './image/star-white-fill.svg'
     star4.src = './image/star-white-fill.svg'
-    totalStars = 4
+    form.star.value = '4'
 })
 
 star5.addEventListener('click', () => {
     [star1, star2, star3, star4, star5].map((e) => e.src = './image/star-white-fill.svg')
-    totalStars = 5
+    form.star.value = '5'
+})
+
+function showWarning(text) {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+    })
+    const pos = form.name.getBoundingClientRect()
+    warning.style.display = 'block'
+    warning.style.opacity = 1
+    warning.innerText = text
+    warning.style.top = 495 + 'px'
+    warning.style.left = pos.left + 10 + 'px'
+    setTimeout(() => {
+        warning.style.opacity = 0
+        setTimeout(() => {
+            warning.style.display = 'none'
+        }, 500)
+    }, 3000)
+}
+
+function checkName(content) {
+    const str = content.replace(/\s+/g, '')
+    const regexp = new RegExp("^[A-zА-яЁё]+$");
+    if (str == '') {
+        showWarning('Заполните это поле')
+    }
+    else if (content.length > 50) {
+        showWarning('Допустимо 50 символов')
+    }
+    else if (!regexp.test(str)) {
+        showWarning('Допустимы только буквы')
+    }
+    else {
+        return true
+    }
+}
+
+const phoneMask = form.phone
+phoneMask.addEventListener('focus', () => {
+    form.phone.value = '+7('
 })
 
 document.getElementById('submit').addEventListener('click', e => {
     e.preventDefault()
-    const form = document.forms['form']
-    const name = form.elements['name'].value
-    const contact = form.elements['contact'].value
-    const question1 = form.elements['question1'].value
-    const question2 = form.elements['question2'].value
-    const question3 = form.elements['question3'].value
-    const question4 = form.elements['question4'].value
-    const question5 = form.elements['question5'].value
-    const question6 = form.elements['question6'].value
-    const question7 = form.elements['question7'].value
-    const question8 = form.elements['question8'].value
-    const question9 = form.elements['question9'].value
-    const message = JSON.stringify({
-        name: name,
-        contact: contact,
-        stars: totalStars,
-        question1: question1,
-        question2: question2,
-        question3: question3,
-        question4: question4,
-        question5: question5,
-        question6: question6,
-        question7: question7,
-        question8: question8,
-        question9: question9,
-    })
-    const request = new XMLHttpRequest()
+    const name = form.name.value
+    if (checkName(name)) {
+        const phone = form.phone.value
+        const checkbox = document.querySelector('.checkbox')
+        const message = JSON.stringify({
+            name,
+            phone,
+            star: form.star.value,
+            question1: form.question1.value,
+            question2: form.question2.value,
+            question3: form.question3.value,
+            question4: form.question4.value,
+            question5: form.question5.value,
+            question6: form.question6.value,
+            question7: form.question7.value,
+            question8: form.question8.value,
+            question9: form.question9.value,
+        })
+        console.log(message)
+    }
+
+
+    /* const request = new XMLHttpRequest()
     request.open('POST', '/message', true)
     request.setRequestHeader('Content-Type', 'application/json')
     request.addEventListener('load', () => {
         document.querySelector('.wrapper').style.display = 'none'
-        const subtitle = document.querySelector('.subtitle')
+        document.querySelector('.subtitle').style.display = 'none'
+        const container = document.querySelector('.container')
+        const answer = document.createElement('div')
+        container.insertAdjacentElement("beforeend", answer)
+        answer.classList.add('subtitle')
         if (request.response == 'sucsess') {
-            subtitle.innerHTML = 'СПАСИБО ЗА ОСТАВЛЕННЫЙ ОТЗЫВ!'
+            answer.insertAdjacentText('beforeend', 'СПАСИБО ЗА ОСТАВЛЕННЫЙ ОТЗЫВ!')
         } else {
-            subtitle.innerHTML = 'ПРОИЗОШЛА ОШИБКА ПРИ ОТПРАВКЕ ОТЗЫВА'
+            answer.insertAdjacentText('beforeend', 'ПРОИЗОШЛА ОШИБКА ПРИ ОТПРАВКЕ ОТЗЫВА')
         }
     })
-    request.send(message)
+    request.send(message) */
 })
+
+function foo() {
+    document.querySelector('.wrapper').style.display = 'none'
+    document.querySelector('.subtitle').style.display = 'none'
+    const container = document.querySelector('.container')
+    const answer = document.createElement('div')
+    container.insertAdjacentElement("beforeend", answer)
+    answer.classList.add('subtitle')
+    if (1) {
+        answer.insertAdjacentText('beforeend', 'СПАСИБО ЗА ОСТАВЛЕННЫЙ ОТЗЫВ!')
+    } else {
+        answer.insertAdjacentText('beforeend', 'ПРОИЗОШЛА ОШИБКА ПРИ ОТПРАВКЕ ОТЗЫВА')
+    }
+}
+
