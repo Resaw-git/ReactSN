@@ -55,14 +55,14 @@ q2_r2.addEventListener('click', () => {
 star1.addEventListener('click', () => {
     [star1, star2, star3, star4, star5].map((e) => e.src = './image/star-white.svg')
     star1.src = './image/star-white-fill.svg'
-    form.star.value = '1'
+    form.star.value = 1
 })
 
 star2.addEventListener('click', () => {
     [star1, star2, star3, star4, star5].map((e) => e.src = './image/star-white.svg')
     star1.src = './image/star-white-fill.svg'
     star2.src = './image/star-white-fill.svg'
-    form.star.value = '2'
+    form.star.value = 2
 })
 
 star3.addEventListener('click', () => {
@@ -70,7 +70,7 @@ star3.addEventListener('click', () => {
     star1.src = './image/star-white-fill.svg'
     star2.src = './image/star-white-fill.svg'
     star3.src = './image/star-white-fill.svg'
-    form.star.value = '3'
+    form.star.value = 3
 })
 
 star4.addEventListener('click', () => {
@@ -79,25 +79,29 @@ star4.addEventListener('click', () => {
     star2.src = './image/star-white-fill.svg'
     star3.src = './image/star-white-fill.svg'
     star4.src = './image/star-white-fill.svg'
-    form.star.value = '4'
+    form.star.value = 4
 })
 
 star5.addEventListener('click', () => {
     [star1, star2, star3, star4, star5].map((e) => e.src = './image/star-white-fill.svg')
-    form.star.value = '5'
+    form.star.value = 5
 })
 
-function showWarning(text) {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-    })
+function showWarning(text, place, isCheckbox = false) {
     const pos = form.name.getBoundingClientRect()
     warning.style.display = 'block'
     warning.style.opacity = 1
     warning.innerText = text
-    warning.style.top = 495 + 'px'
-    warning.style.left = pos.left + 10 + 'px'
+    warning.style.top = place + 'px'
+    if (!isCheckbox) {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        })
+        warning.style.left = pos.left + 10 + 'px'
+    } else {
+        warning.style.left = pos.left - 22 + 'px'
+    }
     setTimeout(() => {
         warning.style.opacity = 0
         setTimeout(() => {
@@ -110,28 +114,70 @@ function checkName(content) {
     const str = content.replace(/\s+/g, '')
     const regexp = new RegExp("^[A-zА-яЁё]+$");
     if (str == '') {
-        showWarning('Заполните это поле')
+        showWarning('Заполните это поле', 495)
+    } else if (content.length > 50) {
+        showWarning('Допустимо 50 символов', 495)
+    } else if (!regexp.test(str)) {
+        showWarning('Допустимы только буквы', 495)
+    } else {
+        return true
     }
-    else if (content.length > 50) {
-        showWarning('Допустимо 50 символов')
+}
+
+function checkPhone() {
+    if (form.phone.value.length < 18) {
+        showWarning('Введите номер телефона', 555)
+    } else {
+        return true
     }
-    else if (!regexp.test(str)) {
-        showWarning('Допустимы только буквы')
-    }
-    else {
+}
+
+function checkAgree() {
+    if (!document.querySelector('.checkbox').checked) {
+        showWarning('Отметьте чтобы продолжить', 2225, true)
+    } else {
         return true
     }
 }
 
 const phoneMask = form.phone
-phoneMask.addEventListener('focus', () => {
-    form.phone.value = '+7('
-})
+let keyCode
+
+function mask(event) {
+    event.keyCode && (keyCode = event.keyCode)
+    let pos = this.selectionStart
+    if (pos < 3) event.preventDefault()
+    let matrix = "+7 (___) ___-__-__",
+        i = 0,
+        def = matrix.replace(/\D/g, ""),
+        val = this.value.replace(/\D/g, ""),
+        new_value = matrix.replace(/[_\d]/g, function(a) {
+            return i < val.length ? val.charAt(i++) || def.charAt(i) : a
+        })
+    i = new_value.indexOf("_")
+    if (i != -1) {
+        i < 5 && (i = 3);
+        new_value = new_value.slice(0, i)
+    }
+    let reg = matrix.substring(0, this.value.length).replace(/_+/g,
+        function(a) {
+            return "\\d{1," + a.length + "}"
+        }).replace(/[+()]/g, "\\$&")
+    reg = new RegExp("^" + reg + "$")
+    if (!reg.test(this.value) || this.value.length < 5 || keyCode > 47 && keyCode < 58) this.value = new_value
+    if (event.type == "blur" && this.value.length < 5)  this.value = ""
+}
+
+phoneMask.addEventListener("input", mask, false);
+phoneMask.addEventListener("focus", mask, false);
+phoneMask.addEventListener("blur", mask, false);
+phoneMask.addEventListener("keydown", mask, false)
+
 
 document.getElementById('submit').addEventListener('click', e => {
     e.preventDefault()
     const name = form.name.value
-    if (checkName(name)) {
+    if (checkName(name) && checkPhone() && checkAgree()) {
         const phone = form.phone.value
         const checkbox = document.querySelector('.checkbox')
         const message = JSON.stringify({
@@ -147,12 +193,10 @@ document.getElementById('submit').addEventListener('click', e => {
             question7: form.question7.value,
             question8: form.question8.value,
             question9: form.question9.value,
+            check: checkbox.checked
         })
-        console.log(message)
-    }
 
-
-    /* const request = new XMLHttpRequest()
+    const request = new XMLHttpRequest()
     request.open('POST', '/message', true)
     request.setRequestHeader('Content-Type', 'application/json')
     request.addEventListener('load', () => {
@@ -162,26 +206,13 @@ document.getElementById('submit').addEventListener('click', e => {
         const answer = document.createElement('div')
         container.insertAdjacentElement("beforeend", answer)
         answer.classList.add('subtitle')
-        if (request.response == 'sucsess') {
+            const res = JSON.parse(request.response)
+        if (res.result == 'sucsess') {
             answer.insertAdjacentText('beforeend', 'СПАСИБО ЗА ОСТАВЛЕННЫЙ ОТЗЫВ!')
         } else {
             answer.insertAdjacentText('beforeend', 'ПРОИЗОШЛА ОШИБКА ПРИ ОТПРАВКЕ ОТЗЫВА')
         }
     })
-    request.send(message) */
-})
-
-function foo() {
-    document.querySelector('.wrapper').style.display = 'none'
-    document.querySelector('.subtitle').style.display = 'none'
-    const container = document.querySelector('.container')
-    const answer = document.createElement('div')
-    container.insertAdjacentElement("beforeend", answer)
-    answer.classList.add('subtitle')
-    if (1) {
-        answer.insertAdjacentText('beforeend', 'СПАСИБО ЗА ОСТАВЛЕННЫЙ ОТЗЫВ!')
-    } else {
-        answer.insertAdjacentText('beforeend', 'ПРОИЗОШЛА ОШИБКА ПРИ ОТПРАВКЕ ОТЗЫВА')
+    request.send(message)
     }
-}
-
+})
