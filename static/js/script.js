@@ -1,3 +1,4 @@
+const modal = document.querySelector('.modal__wrapper')
 const q1_r1 = document.getElementById('q1-r1')
 const q1_r2 = document.getElementById('q1-r2')
 const q2_r1 = document.getElementById('q2-r1')
@@ -173,6 +174,23 @@ phoneMask.addEventListener("focus", mask, false);
 phoneMask.addEventListener("blur", mask, false);
 phoneMask.addEventListener("keydown", mask, false)
 
+function showModal() {
+    document.querySelector('.modal').style.transform = 'scale(1)'
+    modal.classList.toggle('is-open')
+}
+
+document.querySelectorAll('#redir').forEach(e => {
+    e.addEventListener('click', () => {
+        if (e.textContent == 'Да') {
+            window.location.href = 'https://site.sbis.ru/go/0R26ss'
+        } else {
+            modal.classList.toggle('is-open')
+            document.querySelector('.modal').style.transform = 'scale(0)'
+        }
+         
+    })
+})
+
 
 document.getElementById('submit').addEventListener('click', e => {
     e.preventDefault()
@@ -209,6 +227,7 @@ document.getElementById('submit').addEventListener('click', e => {
             const res = JSON.parse(request.response)
         if (res.result == 'sucsess') {
             answer.insertAdjacentText('beforeend', 'СПАСИБО ЗА ОСТАВЛЕННЫЙ ОТЗЫВ!')
+            setTimeout(showModal, 750)
         } else {
             answer.insertAdjacentText('beforeend', 'ПРОИЗОШЛА ОШИБКА ПРИ ОТПРАВКЕ ОТЗЫВА')
         }
